@@ -13,14 +13,14 @@ var validate = function() {
 
 	if (!isHost(configuration.host)) {
 
-		console.log(configuration.host + " is not a valid host name. Shutting Down.")
+		console.log(configuration.host + ' is not a valid host name. Shutting Down.')
 
 		process.exit();
 	}
 
 	if (!isPort(configuration.port)) {
 
-		console.log(configuration.port + " is not a valid port. Shutting Down.")
+		console.log(configuration.port + ' is not a valid port. Shutting Down.')
 
 		process.exit();
 	}
