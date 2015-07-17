@@ -141,7 +141,7 @@ var Timer = React.createClass({
 		if (e.keyCode == 32) {
 			if (this.timing) {
 				this.props.model.stop();
-			} else {
+			} else if (document.activeElement.id != "chatInputBox") {
 				this.setState({down: true});
 			}
 		} else if (this.timing) {
@@ -154,9 +154,11 @@ var Timer = React.createClass({
 	keyUp: function (e) {
 		if (e.keyCode == 32) {
 			if (!this.timing) {
-				this.props.model.start();
-				this.timing = true;
-				this.setState({down: false});
+				if (document.activeElement.id != "chatInputBox") {
+					this.props.model.start();
+					this.timing = true;
+					this.setState({down: false});
+				}
 			} else {
 				this.timing = false;
 			}
