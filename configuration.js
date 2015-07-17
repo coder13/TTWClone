@@ -1,7 +1,6 @@
 var colors = require('colors');
 
 var configuration = {
-
 	host: '0.0.0.0',
 	port: 8000
 };
@@ -12,29 +11,22 @@ var configuration = {
  */
 
 var validate = function() {
-
 	if (!isHost(configuration.host)) {
-
-		console.log(configuration.host.red.bold + ' is not a valid host name.'.red + 'Shutting Down.'.red.bold)
-
+		console.log(configuration.host.red.bold + ' is not a valid host name.'.red + 'Shutting Down.'.red.bold);
 		process.exit();
 	}
 
 	if (!isPort(configuration.port)) {
-
-		console.log(String(configuration.port).red.bold + ' is not a valid port.'.red + ' Shutting Down.'.red.bold)
-
+		console.log(String(configuration.port).red.bold + ' is not a valid port.'.red + ' Shutting Down.'.red.bold);
 		process.exit();
 	}
 };
 
 var isPort = function(port) {
-
 	return Number.isInteger(port) && port >= 0 && port <= 65535; // Note that port 0 means just random port but we the os will handle it not us
 };
 
 var isHost = function(host) {
-
 	/*
 	 * regexs borrowed from http://stackoverflow.com/questions/53497/regular-expression-that-matches-valid-ipv6-addresses
 	 * a modified regex from http://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url is used for the url regex
@@ -51,7 +43,6 @@ var isHost = function(host) {
 };
 
 module.exports = {
-
 	host: configuration.host,
 	port: configuration.port,
 	validate: validate,
