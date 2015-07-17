@@ -1,4 +1,5 @@
 var assert = require('assert');
+var colors = require('colors');
 var configuration = require('./configuration');
 
 // Test configuration.isPort()
@@ -17,7 +18,7 @@ assert.ok(!configuration.isPort(1.5));
 assert.ok(!configuration.isPort(NaN));
 assert.ok(!configuration.isPort('test'));
 
-console.log('configuration.isPort() passed!');
+console.log('configuration.isPort() passed!'.green);
 
 // Test configuration.isHost()
 
@@ -75,4 +76,4 @@ assert.ok(!configuration.isHost('https://test.test/test'));
 assert.ok(!configuration.isHost('https://www.test.test/test'));
 assert.ok(!configuration.isHost(5));
 
-console.log('configuration.isHost() passed!');
+console.log('configuration.isHost() passed!'.green);

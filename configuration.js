@@ -1,3 +1,5 @@
+var colors = require('colors');
+
 var configuration = {
 
 	host: '0.0.0.0',
@@ -13,14 +15,14 @@ var validate = function() {
 
 	if (!isHost(configuration.host)) {
 
-		console.log(configuration.host + ' is not a valid host name. Shutting Down.')
+		console.log(configuration.host.red.bold + ' is not a valid host name.'.red + 'Shutting Down.'.red.bold)
 
 		process.exit();
 	}
 
 	if (!isPort(configuration.port)) {
 
-		console.log(configuration.port + ' is not a valid port. Shutting Down.')
+		console.log(String(configuration.port).red.bold + ' is not a valid port.'.red + ' Shutting Down.'.red.bold)
 
 		process.exit();
 	}

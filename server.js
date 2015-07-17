@@ -1,5 +1,6 @@
+var colors = require('colors');
 var configuration = require("./configuration");
-configuration.validate();
+configuration.validate(); // Make sure everything is ok before we start
 
 var Hapi = require('hapi'),
 	scramblers = require('./scramblers')
@@ -65,7 +66,7 @@ io.on('connection', function (socket) {
 	try {
 		var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++};
 		client.name = 'guest' + client.clientID;
-		console.log(client.name, 'connected with id', socket.id, 'with ip:', socket.request.connection.remoteAddress);
+		console.log(client.name.bold, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
 
 		socket.emit('handshake', JSON.stringify(client));
 		socket.emit('message', JSON.stringify({type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()}));
@@ -101,7 +102,7 @@ io.on('connection', function (socket) {
 		socket.on('disconnect', function (data) {
 			socket.broadcast.emit('userJoined', JSON.stringify({client: client, timeStamp: Date.now()}));
 			delete clients[socket.id];
-			console.log(socket.id, 'disconnected');
+			console.log(socket.id.bold, 'disconnected');
 		});
 	} catch (e) {
 		// uh...need to do this to actually get the errors
@@ -114,11 +115,11 @@ server.start(function(err) {
 	if (err)
 		console.error(err);
 	else
-		console.log('Server started at', server.info.uri);
+		console.log('Server started at', colors.green(server.info.uri));
 });
 
 var stop = function () {
-	console.log('stopping...');
+	console.log('stopping...'.red);
 	server.stop();
 };
 
