@@ -1,7 +1,8 @@
-var Scramblers = require('./scramblers'),
+var Scramblers = require('./scramblers');
 
 module.exports = {
 	scramble: function (args) {
+
 		
 	}
 }
