@@ -141,8 +141,9 @@ var Timer = React.createClass({
 		if (e.keyCode == 32) {
 			if (this.timing) {
 				this.props.model.stop();
-			} else
+			} else {
 				this.setState({down: true});
+			}
 		} else if (this.timing) {
 			this.props.model.stop();
 			this.timing = false;
