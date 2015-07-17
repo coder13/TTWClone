@@ -26,23 +26,22 @@ var socket = io.connect(window.location.hostname + ':' + window.location.port);
 if (socket) {
 	socket.on('handshake', function (data) {
 		console.log(arguments);
-		if (data)
-			Me = JSON.parse(data);
-		else
+		if (data) {
+			Me = data;
+		} else {
 			console.error(data);
+		}
 	});
 
 	socket.on('message', function (data) {
-		chat.addMessage(JSON.parse(data));
+		chat.addMessage(data);
 	});
 
 	socket.on('userJoined', function (data) {
-		data = JSON.parse(data);
 		chat.addMessage({name: 'System', message: data.client.name + " Joined!", timeStamp: data.timeStamp});
 	});
 
 	socket.on('userLeft', function (data) {
-		data = JSON.parse(data);
 		chat.addMessage({name: 'System', message: data.client.name + " Left.", timeStamp: data.timeStamp});
 	});
 }
