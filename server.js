@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
 		client.name = 'guest' + client.clientID;
 		console.log(client.name, 'connected with id', socket.id, 'with ip:', socket.request.connection.remoteAddress);
 
-		socket.emit('connect', JSON.stringify(client));
+		socket.emit('handshake', JSON.stringify(client));
 		socket.emit('message', JSON.stringify({type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()}));
 
 		io.sockets.emit('userJoined', JSON.stringify({client: client, timeStamp: Date.now()}));

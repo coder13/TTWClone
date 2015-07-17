@@ -24,7 +24,7 @@ React.render(<ChatInput chat={chat}/>, document.getElementById('chatInput'));
 var socket = io.connect(window.location.hostname + ':' + window.location.port);
 
 if (socket) {
-	socket.on('connect', function (data) {
+	socket.on('handshake', function (data) {
 		console.log(arguments);
 		if (data)
 			Me = JSON.parse(data);
@@ -46,7 +46,7 @@ if (socket) {
 		chat.addMessage({name: 'System', message: data.client.name + " Left.", timeStamp: data.timeStamp});
 	});
 }
-	
+
 function send(message) {
 	if (socket) {
 		socket.emit('message', message);
