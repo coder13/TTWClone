@@ -1,0 +1,135 @@
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	position: relative;
+	overflow: hidden;
+	display: table;
+}
+
+body {
+	display: table;
+}
+
+.container {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.scramble {
+	color: #111;
+	font-family: SimHei, monospace;
+}
+
+#header {
+	height: 2em;
+	border: 1px solid #eee;
+}
+
+#body {
+	width: 100%;
+	border: 1px solid #eee;
+	background-color: #efefef;
+}
+
+#scramble {
+	width: 100%;
+	height: 1em;
+	text-align: center;
+}
+
+#timer {
+	text-align: center;
+	width: 100%;
+	height: 100%;
+}
+
+#bottom {
+	width: 100%;
+	height: 35%;
+	position: absolute;
+	bottom: 0px;
+	display: table;
+}
+
+/* Chat */
+
+#chat {
+	float: left;
+	border: 1px solid #eee;
+	width: 100%;
+	height: 100%;
+	max-height: 100%;
+	background-color: #FFFFCC;
+	position: relative;
+	display: table;
+}
+
+#chatMessages {
+	width: 100%;
+	height: calc(100% - 1em);
+	display: table;
+}
+
+#messages {
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	padding-bottom: 5px;
+	padding-left: 2px;
+	padding-top: 2px;
+}
+
+.chatLine {
+	width: 100%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding: 2px;
+
+}
+
+.chatTime {
+	color: grey;
+	float: left;
+	padding-right: 10px;
+}
+
+.chatName {
+	font-weight: bold;
+	min-width: 75px;
+	display: inline-block;
+	text-align: right;
+	margin-right: .5em;
+}
+
+.chatMessage {
+}
+
+#chatInput {
+	display: table;
+	width: 100%;
+	height: 1em;
+	position: absolute;
+	bottom: 0px;
+}
+
+#chatInputBox {
+	width: 100%;
+}
+
+#sendChat {
+	display: table-cell;
+}
+
+#chatInputSpan {
+	display: table-cell;
+	width: 100%;
+	padding: 0px 5px;
+}
+
+/* Stats */
+
+#stats {
+
+}
