@@ -1,6 +1,8 @@
+var configuration = require("./configuration");
+configuration.validate();
+
 var Hapi = require('hapi'),
-	scramblers = require('./scramblers'),
-	serverPort = (process.argv[2] ? +process.argv[2] : 8000);
+	scramblers = require('./scramblers')
 var vantage = require('vantage')();
 vantage
 	.mode('node')
@@ -27,9 +29,10 @@ vantage
 */
 var server = new Hapi.Server();
 server.connection({
-	host: '0.0.0.0',
-	port: serverPort,
-	labels: ['api']
+	host: configuration.host,
+	port: configuration.port,
+	labels: ['api'],
+
 });
 
 // Serve index.html
