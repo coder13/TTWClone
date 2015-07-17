@@ -4,6 +4,7 @@ configuration.validate(); // Make sure everything is ok before we start
 
 var Hapi = require('hapi'),
 	scramblers = require('./scramblers')
+var uuid = require('uuid');
 var vantage = require('vantage')();
 vantage
 	.mode('node')
@@ -68,10 +69,25 @@ io.on('connection', function (socket) {
 		client.name = 'guest' + client.clientID;
 		console.log(client.name.bold, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
 
-		socket.emit('handshake', client);
+		socket.emit('handshake', {state: "START", client: client});
 		socket.emit('message', {type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()});
 
 		io.sockets.emit('userJoined', {client: client, timeStamp: Date.now()});
+
+		socket.on('handshake', function (data) {
+
+			if (data) {
+
+				client.uuid = data;
+			}
+
+			else {
+
+				client.uuid = uuid.v4();
+
+				socket.emit('handshake', {state: "ID", uuid: client.uuid});
+			}
+		});
 
 		socket.on('message', function (data) {
 			if (data[0] === '/') {

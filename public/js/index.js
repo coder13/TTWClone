@@ -25,7 +25,27 @@ var socket = io.connect(window.location.hostname + ':' + window.location.port);
 
 if (socket) {
 	socket.on('handshake', function (data) {
-		console.log(arguments);
+
+		switch (data.state) {
+
+			case 'START':
+
+				Me = data.client;
+
+				var uuid = localStorage.getItem('uuid');
+
+				Me.uuid = uuid;
+
+				socket.emit('handshake', uuid);
+
+				break;
+
+			case 'ID':
+
+				Me.uuid = data.uuid;
+
+				localStorage.setItem('uuid', Me.uuid);
+		}
 		if (data) {
 			Me = data;
 		} else {
