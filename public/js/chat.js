@@ -71,8 +71,8 @@ var Chat = React.createClass({
 
 	render: function () {
 		var line = function (l) {
-			return (<Chatline model={l}/>)
-		};
+			return (<Chatline key={this.props.collection.indexOf(l)} model={l}/>)
+		}.bind(this);
 		return (<div id="messages">{this.props.collection.map(line)}</div>);
 	}
 });
