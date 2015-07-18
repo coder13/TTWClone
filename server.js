@@ -62,7 +62,7 @@ server.route({
 		Chat
 */
 var io = require('socket.io')(server.listener);
-var	clients = {}, clientCount = 0;
+var clients = {}, clientCount = 0;
 var users = {'fb537f9c-5583-4c51-b0a0-dca40ca5f594': new User()}; // TODO back end storage for users
 
 io.on('connection', function (socket) {
