@@ -58,11 +58,11 @@ if (socket) {
 	});
 
 	socket.on('userJoined', function (data) {
-		chat.addMessage({name: 'System', message: data.client.name + " Joined!", timeStamp: data.timeStamp});
+		chat.addMessage({name: 'System', message: data.client.user.name + " Joined!", timeStamp: data.timeStamp});
 	});
 
 	socket.on('userLeft', function (data) {
-		chat.addMessage({name: 'System', message: data.client.name + " Left.", timeStamp: data.timeStamp});
+		chat.addMessage({name: 'System', message: data.client.user.name + " Left.", timeStamp: data.timeStamp});
 	});
 }
 
