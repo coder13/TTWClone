@@ -12,9 +12,7 @@
 // React.render(<Header/>, document.getElementById('header'));
 
 var timer = new App.Models.Timer({update: 'seconds', accuracy: 2, input: 'timer', inspection: 15, phase: 1});
-//React.render(<Timer model={timer}> <Penalties/> </Timer>, document.getElementById('timer'));
 React.render(<Timer model={timer}/>, document.getElementById('timer'));
-//React.render(<Penalties/>, document.getElementById('penalties'));
 
 var messages = [];
 var chat = new App.Collections.Chat(messages);
