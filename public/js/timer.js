@@ -141,6 +141,7 @@ var Timer = React.createClass({
 		if (e.keyCode == 32) {
 			if (this.timing) {
 				this.props.model.stop();
+				this.refs.penalties.setState({hidden: false});
 			} else if (document.activeElement.id != 'chatInputBox') {
 				this.setState({down: true, penalty: "ok"});
 				this.refs.penalties.setState({hidden: true});
@@ -148,6 +149,7 @@ var Timer = React.createClass({
 		} else if (this.timing) {
 			this.props.model.stop();
 			this.timing = false;
+			this.refs.penalties.setState({hidden: false});
 		}
 		this.render();
 	},
@@ -162,7 +164,6 @@ var Timer = React.createClass({
 				}
 			} else {
 				this.timing = false;
-				this.refs.penalties.setState({hidden: false});
 			}
 		}
 		this.render();
