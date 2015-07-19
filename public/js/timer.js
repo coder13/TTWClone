@@ -177,22 +177,13 @@ var Timer = React.createClass({
 	},
 
 	render: function() {
-		if (this.state.penalty != "dnf") {
-			var style = {color: this.state.down ? 'green' : (this.state.penalty === "plus2" ? 'red' : 'black')};
-			return (
-				<div>
-					<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>
-					<Penalties ref="penalties" penaltyChange={this.penaltyChange}/>
-				</div>
-			);
-		} else {
-			return (
-				<div>
-					<p style={_.extend({color: "red"}, this.style)}>DNF</p>
-					<Penalties ref="penalties" penaltyChange={this.penaltyChange}/>
-				</div>
-			);
-		}
+		var style = {color: this.state.down ? 'green' : (this.state.penalty != "ok" ? 'red' : 'black')};
+		return (
+			<div>
+				<p style={_.extend(style, this.style)}>{pretty(this.state.penalty != "dnf" ? this.props.model.time : -1)}</p>
+				<Penalties ref="penalties" penaltyChange={this.penaltyChange}/>
+			</div>
+		);
 	}
 });
 
