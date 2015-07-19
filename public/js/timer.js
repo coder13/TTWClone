@@ -143,6 +143,7 @@ var Timer = React.createClass({
 				this.props.model.stop();
 			} else if (document.activeElement.id != "chatInputBox") {
 				this.setState({down: true});
+				this.refs.penalties.setState({hidden: true});
 			}
 		} else if (this.timing) {
 			this.props.model.stop();
@@ -161,6 +162,7 @@ var Timer = React.createClass({
 				}
 			} else {
 				this.timing = false;
+				this.refs.penalties.setState({hidden: false});
 			}
 		}
 		this.render();
@@ -168,20 +170,47 @@ var Timer = React.createClass({
 
 	render: function() {
 		var style = {color: this.state.down ? 'green' : 'black'};
-		return (<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>);
+		return (
+			<div>
+				<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>
+				<Penalties ref="penalties"/>
+			</div>
+		);
 	}
 });
 
 var Penalties = React.createClass({
 
+	getInitialState: function() {
+
+		return {hidden: true};
+	},
+
 	render: function() {
 
-		return (
-			<div>
-				<input type="radio" name="penalty" value="ok">OK</input>
-				<input type="radio" name="penalty" value="plus2">+2</input>
-				<input type="radio" name="penalty" value="DNF">DNF</input>
-			</div>
-		)
+		if (!this.state.hidden) {
+
+			return (
+				<div>
+					<label>
+						<input type="radio" name="penalty" id="ok" value="ok" defaultChecked="defaultChecked"/>
+						OK
+					</label>
+
+					<label>
+						<input type="radio" name="penalty" id="plus2" value="plus2"/>
+						+2
+					</label>
+
+					<label>
+						<input type="radio" name="penalty" id="DNF" value="DNF"/>
+						DNF
+					</label>
+
+				</div>
+			);
+		}
+
+		return false;
 	}
 });
