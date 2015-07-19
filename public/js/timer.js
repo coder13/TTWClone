@@ -101,6 +101,7 @@ App.Models.Timer = Backbone.Model.extend({
 	start: function () {
 		if (!this.active) {
 			this.active = true;
+			this.time = 0;
 			this.started = now();
 			this.timerObj = setInterval(_.bind(this.tick, this), 10);
 		}
@@ -112,7 +113,6 @@ App.Models.Timer = Backbone.Model.extend({
 			clearInterval(this.timerObj);
 			if (this.addTime)
 				this.addTime(this.time);
-			this.time = 0;
 		}
 	},
 
@@ -126,7 +126,7 @@ var Timer = React.createClass({
 	style: {fontSize: '100px', margin: '2px'},
 	
 	getInitialState: function() {
-		return {timing: false, down: false};
+		return {timing: false, down: false, penalty: "ok"};
 	},
 
 	componentDidMount: function() {
@@ -141,8 +141,8 @@ var Timer = React.createClass({
 		if (e.keyCode == 32) {
 			if (this.timing) {
 				this.props.model.stop();
-			} else if (document.activeElement.id != "chatInputBox") {
-				this.setState({down: true});
+			} else if (document.activeElement.id != 'chatInputBox') {
+				this.setState({down: true, penalty: "ok"});
 				this.refs.penalties.setState({hidden: true});
 			}
 		} else if (this.timing) {
@@ -155,7 +155,7 @@ var Timer = React.createClass({
 	keyUp: function (e) {
 		if (e.keyCode == 32) {
 			if (!this.timing) {
-				if (document.activeElement.id != "chatInputBox") {
+				if (document.activeElement.id != 'chatInputBox') {
 					this.props.model.start();
 					this.timing = true;
 					this.setState({down: false});
@@ -170,17 +170,29 @@ var Timer = React.createClass({
 
 	penaltyChange: function(event) {
 
-		console.log(event.target.value);
+		console.log(this.state);
+		this.setState({penalty: event.target.value});
+		console.log(this.props.model.time);
+		this.render();
 	},
 
 	render: function() {
-		var style = {color: this.state.down ? 'green' : 'black'};
-		return (
-			<div>
-				<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>
-				<Penalties ref="penalties" penaltyChange={this.penaltyChange} />
-			</div>
-		);
+		if (this.state.penalty != "dnf") {
+			var style = {color: this.state.down ? 'green' : (this.state.penalty === "plus2" ? 'red' : 'black')};
+			return (
+				<div>
+					<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>
+					<Penalties ref="penalties" penaltyChange={this.penaltyChange}/>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<p style={_.extend({color: "red"}, this.style)}>DNF</p>
+					<Penalties ref="penalties" penaltyChange={this.penaltyChange}/>
+				</div>
+			);
+		}
 	}
 });
 
