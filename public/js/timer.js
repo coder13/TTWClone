@@ -186,6 +186,25 @@ var Penalties = React.createClass({
 		return {hidden: true};
 	},
 
+	handleChange: function(event) {
+
+		switch (event.target.value) {
+
+			default:
+			case "ok":
+
+				break;
+
+			case "plus2":
+
+				break;
+
+			case "dnf":
+
+				break;
+		}
+	},
+
 	render: function() {
 
 		if (!this.state.hidden) {
@@ -193,20 +212,19 @@ var Penalties = React.createClass({
 			return (
 				<div>
 					<label>
-						<input type="radio" name="penalty" id="ok" value="ok" defaultChecked="defaultChecked"/>
+						<input type="radio" name="penalty" value="ok" onChange={this.handleChange} defaultChecked="defaultChecked"/>
 						OK
 					</label>
 
 					<label>
-						<input type="radio" name="penalty" id="plus2" value="plus2"/>
+						<input type="radio" name="penalty" value="plus2" onChange={this.handleChange}/>
 						+2
 					</label>
 
 					<label>
-						<input type="radio" name="penalty" id="DNF" value="DNF"/>
+						<input type="radio" name="penalty" value="dnf" onChange={this.handleChange}/>
 						DNF
 					</label>
-
 				</div>
 			);
 		}
