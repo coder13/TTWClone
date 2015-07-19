@@ -167,7 +167,21 @@ var Timer = React.createClass({
 	},
 
 	render: function() {
-		var style = {color: this.state.down?'green':'black'};
+		var style = {color: this.state.down ? 'green' : 'black'};
 		return (<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>);
+	}
+});
+
+var Penalties = React.createClass({
+
+	render: function() {
+
+		return (
+			<div>
+				<input type="radio" name="penalty" value="ok">OK</input>
+				<input type="radio" name="penalty" value="plus2">+2</input>
+				<input type="radio" name="penalty" value="DNF">DNF</input>
+			</div>
+		)
 	}
 });
