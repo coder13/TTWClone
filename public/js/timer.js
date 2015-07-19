@@ -168,12 +168,17 @@ var Timer = React.createClass({
 		this.render();
 	},
 
+	penaltyChange: function(event) {
+
+		console.log(event.target.value);
+	},
+
 	render: function() {
 		var style = {color: this.state.down ? 'green' : 'black'};
 		return (
 			<div>
 				<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>
-				<Penalties ref="penalties"/>
+				<Penalties ref="penalties" penaltyChange={this.penaltyChange} />
 			</div>
 		);
 	}
@@ -186,25 +191,6 @@ var Penalties = React.createClass({
 		return {hidden: true};
 	},
 
-	handleChange: function(event) {
-
-		switch (event.target.value) {
-
-			default:
-			case "ok":
-
-				break;
-
-			case "plus2":
-
-				break;
-
-			case "dnf":
-
-				break;
-		}
-	},
-
 	render: function() {
 
 		if (!this.state.hidden) {
@@ -212,17 +198,17 @@ var Penalties = React.createClass({
 			return (
 				<div>
 					<label>
-						<input type="radio" name="penalty" value="ok" onChange={this.handleChange} defaultChecked="defaultChecked"/>
+						<input type="radio" name="penalty" value="ok" onChange={this.props.penaltyChange} defaultChecked="defaultChecked"/>
 						OK
 					</label>
 
 					<label>
-						<input type="radio" name="penalty" value="plus2" onChange={this.handleChange}/>
+						<input type="radio" name="penalty" value="plus2" onChange={this.props.penaltyChange}/>
 						+2
 					</label>
 
 					<label>
-						<input type="radio" name="penalty" value="dnf" onChange={this.handleChange}/>
+						<input type="radio" name="penalty" value="dnf" onChange={this.props.penaltyChange}/>
 						DNF
 					</label>
 				</div>
