@@ -13,6 +13,7 @@
 
 var timer = new App.Models.Timer({update: 'seconds', accuracy: 2, input: 'timer', inspection: 15, phase: 1});
 React.render(<Timer model={timer}/>, document.getElementById('timer'));
+React.render(<Times/>, document.getElementById('times'));
 
 var messages = [];
 var chat = new App.Collections.Chat(messages);

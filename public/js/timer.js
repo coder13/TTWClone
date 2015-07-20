@@ -80,6 +80,34 @@ var Time = React.createClass({
 	}
 });
 
+var Times = React.createClass({
+
+	render: function() {
+
+		return (
+			<table>
+				<tr>
+					<th>&nbsp;Times&nbsp;</th>
+					<th>&nbsp;Steve&nbsp;</th>
+					<th>&nbsp;Bruno&nbsp;</th>
+				</tr>
+
+				<tr>
+					<td>1</td>
+
+					<td>5.25</td>
+					<td>5.39</td>
+				</tr>
+				<tr>
+					<td>2</td>
+
+					<td>5.55</td>
+					<td>5.60</td>
+				</tr>
+			</table>
+		);
+	}
+});
 
 // Timer
 

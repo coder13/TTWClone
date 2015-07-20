@@ -1,6 +1,13 @@
-var user = function() {
+var User = function() {
 
 	this.name = Math.random() > 0.5 ? 'Bob' : 'Joe';
+
+
 };
 
-module.exports = user;
+var Session = function() {
+
+
+};
+
+module.exports = User;
