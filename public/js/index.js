@@ -25,25 +25,44 @@ var socket = io.connect(window.location.hostname + ':' + window.location.port);
 
 if (socket) {
 	socket.on('handshake', function (data) {
-		console.log(arguments);
-		if (data)
-			Me = JSON.parse(data);
-		else
+
+		switch (data.state) {
+
+			case 'START':
+
+				Me = data.client;
+
+				var uuid = localStorage.getItem('uuid');
+
+				Me.uuid = uuid;
+
+				socket.emit('handshake', uuid);
+
+				break;
+
+			case 'ID':
+
+				Me.uuid = data.uuid;
+
+				localStorage.setItem('uuid', Me.uuid);
+		}
+		if (data) {
+			Me = data;
+		} else {
 			console.error(data);
+		}
 	});
 
 	socket.on('message', function (data) {
-		chat.addMessage(JSON.parse(data));
+		chat.addMessage(data);
 	});
 
 	socket.on('userJoined', function (data) {
-		data = JSON.parse(data);
-		chat.addMessage({name: 'System', message: data.client.name + " Joined!", timeStamp: data.timeStamp});
+		chat.addMessage({name: 'System', message: data.client.user.name + " Joined!", timeStamp: data.timeStamp});
 	});
 
 	socket.on('userLeft', function (data) {
-		data = JSON.parse(data);
-		chat.addMessage({name: 'System', message: data.client.name + " Left.", timeStamp: data.timeStamp});
+		chat.addMessage({name: 'System', message: data.client.user.name + " Left.", timeStamp: data.timeStamp});
 	});
 }
 

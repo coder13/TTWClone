@@ -2,8 +2,10 @@ var colors = require('colors');
 var configuration = require("./configuration");
 configuration.validate(); // Make sure everything is ok before we start
 
-var Hapi = require('hapi'),
-	scramblers = require('./scramblers')
+var Hapi = require('hapi');
+var scramblers = require('./scramblers');
+var User = require('./user');
+var uuid = require('uuid');
 var vantage = require('vantage')();
 vantage
 	.mode('node')
@@ -59,22 +61,39 @@ server.route({
 /*
 		Chat
 */
-var io = require('socket.io')(server.listener),
-	clients = {}, clientCount = 0;
+var io = require('socket.io')(server.listener);
+var clients = {}, clientCount = 0;
+var users = {'fb537f9c-5583-4c51-b0a0-dca40ca5f594': new User()}; // TODO back end storage for users
 
 io.on('connection', function (socket) {
 	try {
 		var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++};
-		client.name = 'guest' + client.clientID;
-		console.log(client.name.bold, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
 
-		socket.emit('handshake', JSON.stringify(client));
-		socket.emit('message', JSON.stringify({type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()}));
+		socket.emit('handshake', {state: "START", client: client});
+		socket.emit('message', {type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()});
 
-		io.sockets.emit('userJoined', JSON.stringify({client: client, timeStamp: Date.now()}));
+		socket.on('handshake', function (data) {
+
+			if (data) {
+
+				client.uuid = data;
+			}
+
+			else {
+
+				client.uuid = uuid.v4();
+
+				socket.emit('handshake', {state: "ID", uuid: client.uuid});
+			}
+
+			client.user = users[client.uuid];
+
+			console.log(client.user.name.bold, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
+
+			io.sockets.emit('userJoined', {client: client, timeStamp: Date.now()});
+		});
 
 		socket.on('message', function (data) {
-			var reply;
 			if (data[0] === '/') {
 				var split = data.slice(1).split(' ');
 				var command = split[0];
@@ -84,8 +103,7 @@ io.on('connection', function (socket) {
 						if (args[0] && scramblers[args[0]]) {
 							var scramble = scramblers[args[0]].getRandomScramble(null, Math).scramble_string;
 							var message = args[0] + ' scramble: ' + scramble;
-							reply = {type: 'SYSTEM', name: 'System', message: message, timeStamp: Date.now()};
-							io.sockets.emit('message', JSON.stringify(reply));
+							io.sockets.emit('message', {type: 'SYSTEM', name: 'System', message: message, timeStamp: Date.now()});
 						}
 						// else
 						// 	console.log(86, args, scramblers);
@@ -94,13 +112,11 @@ io.on('connection', function (socket) {
 						break;
 				}
 			} else {
-				reply = {name: client.name, message: data, timeStamp: Date.now()};
-				io.sockets.emit('message', JSON.stringify(reply));
+				io.sockets.emit('message', {name: client.user.name, message: data, timeStamp: Date.now()});
 			}
 		});
 
 		socket.on('disconnect', function (data) {
-			socket.broadcast.emit('userJoined', JSON.stringify({client: client, timeStamp: Date.now()}));
 			delete clients[socket.id];
 			console.log(socket.id.bold, 'disconnected');
 		});
