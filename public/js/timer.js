@@ -204,7 +204,6 @@ var Timer = React.createClass({
 
 	render: function() {
 		var style = {color: this.state.down ? 'green' : (this.state.penalty != "ok" ? 'red' : 'black')};
-		console.log(this.state.penalty != "dnf" ? this.props.model.time + (this.state.penalty == "plus2" ? 2 : 0) : -1);
 		return (
 			<div>
 				<p style={_.extend(style, this.style)}>{pretty(this.state.penalty != "dnf" ? this.props.model.time + (this.state.penalty == "plus2" ? 2000 : 0) : -1)}</p>
