@@ -85,26 +85,34 @@ var Times = React.createClass({
 	render: function() {
 
 		return (
-			<table>
-				<tr>
-					<th>&nbsp;Times&nbsp;</th>
-					<th>&nbsp;Steve&nbsp;</th>
-					<th>&nbsp;Bruno&nbsp;</th>
-				</tr>
+			<div>
+				{console.log()}
+				<table>
+					<tr>
+						<th>&#xa0;Times&#xa0;</th>
+						{_.chain(this.props.times)
+							.keys()
+							.reduce(function(memo, name) {return memo + '<th>' + name + '<th>'})
+							.value()}
 
-				<tr>
-					<td>1</td>
+					</tr>
 
-					<td>5.25</td>
-					<td>5.39</td>
-				</tr>
-				<tr>
-					<td>2</td>
+					
 
-					<td>5.55</td>
-					<td>5.60</td>
-				</tr>
-			</table>
+					<tr>
+						<td>1</td>
+
+						<td>5.25</td>
+						<td>5.39</td>
+					</tr>
+					<tr>
+						<td>2</td>
+
+						<td>5.55</td>
+						<td>5.60</td>
+					</tr>
+				</table>
+			</div>
 		);
 	}
 });
@@ -141,6 +149,7 @@ App.Models.Timer = Backbone.Model.extend({
 			clearInterval(this.timerObj);
 			if (this.addTime)
 				this.addTime(this.time);
+			socket.emit('room', {type: "time", time: this.time})
 		}
 	},
 

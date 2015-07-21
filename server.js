@@ -1,12 +1,13 @@
 var colors = require('colors');
 var configuration = require("./configuration");
 configuration.validate(); // Make sure everything is ok before we start
-
 var Hapi = require('hapi');
+var Room = require('./room');
 var scramblers = require('./scramblers');
 var User = require('./user');
 var uuid = require('uuid');
 var vantage = require('vantage')();
+var _ = require('underscore');
 vantage
 	.mode('node')
 	.delimiter('node:')
@@ -64,12 +65,15 @@ server.route({
 var io = require('socket.io')(server.listener);
 var clients = {}, clientCount = 0;
 var users = {'fb537f9c-5583-4c51-b0a0-dca40ca5f594': new User()}; // TODO back end storage for users
+var rooms = {};
+var mainRoom = new Room(io);
+rooms[mainRoom.id] = mainRoom;
 
 io.on('connection', function (socket) {
 	try {
 		var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++};
 
-		socket.emit('handshake', {state: "START", client: client});
+		socket.emit('handshake', {state: "START", client: client, rooms: _.map(rooms, function(room) {return room.serialize();})});
 		socket.emit('message', {type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()});
 
 		socket.on('handshake', function (data) {
@@ -114,6 +118,19 @@ io.on('connection', function (socket) {
 			} else {
 				io.sockets.emit('message', {name: client.user.name, message: data, timeStamp: Date.now()});
 			}
+		});
+
+		socket.on('joinRoom', function(data) {
+			client.user.session.roomId = data;
+			socket.join(data);
+		});
+
+		socket.on('leaveRoom', function(data) {
+			socket.leave(data);
+		});
+
+		socket.on('room', function(data) {
+			rooms[client.user.session.roomId].onRoomMessage(client, data)
 		});
 
 		socket.on('disconnect', function (data) {
