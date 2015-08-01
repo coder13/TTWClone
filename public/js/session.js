@@ -1,31 +1,59 @@
 App.Models.Times = Backbone.Model.extend({
-	times: {},
-	users: {},
+	times: [
+		{'coder13': 10, 'alexM': 20},
+		{'coder13': 11},
+		{'coder13': 12, 'alexM': 21},
+		{'alexM': 23},
+		{'coder13': 14, 'alexM': 24},
+	],
+
+	currentSolve: {},
+	users: ['coder13', 'alexM'],
+
+	addUser: function (user) {
+		users.push(user);
+		this.render();
+	},
+
+	removeUser: function (user) {
+		delete users[user];
+		this.render();
+	},
 
 	addTime: function (data) {
-
+		times[times.length-1] = {user: data.user, time: data.time};
+		this.render();
 	},
 
 	syncTimes: function(data) {
-
+		if (data) {
+			times = data;
+			this.render();
+		}
 	}
 });
 
 var Times = React.createClass({
-
 	render: function() {
+		var users = this.props.model.users;
 		var renderRow = function (row, index) {
-			
+			console.log(row, index);
+			return (<tr>{users.map(function (user) {
+				return (<td>{row[user]}</td>);
+			})}</tr>);
 		};
+
+		console.log(this.props.model.users);
 
 		return (
 			<div>
-				{console.log()}
 				<table>
 					<tr>
-						<th><b>Times</b></th>
+						{this.props.model.users.map(function (user) {
+						return (<th>{user}</th>);
+						})}
 					</tr>
-					times.map(renderRow);
+					{this.props.model.times.map(renderRow)}
 					
 				</table>
 			</div>

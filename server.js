@@ -7,8 +7,6 @@ var routes = require('./routes');
 var Scramblers = require('./scramblers');
 var uuid = require('uuid');
 
-console.log(config.Server.Host, config.Server.Port);
-
 /*
 	Main
 */
@@ -83,7 +81,6 @@ io.on('connection', function (socket) {
 		});
 
 		socket.on('joinRoom', function(data) {
-			client.user.session.roomId = data;
 			socket.join(data);
 		});
 
@@ -92,7 +89,7 @@ io.on('connection', function (socket) {
 		});
 
 		socket.on('room', function(data) {
-			rooms[client.user.session.roomId].onRoomMessage(client, data);
+			// rooms[client.user.session.roomId].onRoomMessage(client, data);
 		});
 
 		socket.on('disconnect', function (data) {

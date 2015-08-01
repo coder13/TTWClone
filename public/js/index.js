@@ -20,7 +20,7 @@ React.render(<Chat collection={chat}/>, document.getElementById('chatMessages'))
 React.render(<ChatInput chat={chat}/>, document.getElementById('chatInput'));
 
 var times = new App.Models.Times();
-React.render(<Times times={times}/>, document.getElementById('times'));
+React.render(<Times model={times}/>, document.getElementById('times'));
 
 /* Socket */
 
