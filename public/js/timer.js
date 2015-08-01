@@ -80,43 +80,6 @@ var Time = React.createClass({
 	}
 });
 
-var Times = React.createClass({
-
-	render: function() {
-
-		return (
-			<div>
-				{console.log()}
-				<table>
-					<tr>
-						<th>&#xa0;Times&#xa0;</th>
-						{_.chain(this.props.times)
-							.keys()
-							.reduce(function(memo, name) {return memo + '<th>' + name + '<th>'})
-							.value()}
-
-					</tr>
-
-					
-
-					<tr>
-						<td>1</td>
-
-						<td>5.25</td>
-						<td>5.39</td>
-					</tr>
-					<tr>
-						<td>2</td>
-
-						<td>5.55</td>
-						<td>5.60</td>
-					</tr>
-				</table>
-			</div>
-		);
-	}
-});
-
 // Timer
 
 App.Models.Timer = Backbone.Model.extend({
