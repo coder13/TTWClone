@@ -80,7 +80,6 @@ var Time = React.createClass({
 	}
 });
 
-
 // Timer
 
 App.Models.Timer = Backbone.Model.extend({
@@ -101,6 +100,7 @@ App.Models.Timer = Backbone.Model.extend({
 	start: function () {
 		if (!this.active) {
 			this.active = true;
+			this.time = 0;
 			this.started = now();
 			this.timerObj = setInterval(_.bind(this.tick, this), 10);
 		}
@@ -112,7 +112,7 @@ App.Models.Timer = Backbone.Model.extend({
 			clearInterval(this.timerObj);
 			if (this.addTime)
 				this.addTime(this.time);
-			this.time = 0;
+			socket.emit('room', {type: "time", time: this.time})
 		}
 	},
 
@@ -126,7 +126,7 @@ var Timer = React.createClass({
 	style: {fontSize: '100px', margin: '2px'},
 	
 	getInitialState: function() {
-		return {timing: false, down: false};
+		return {timing: false, down: false, penalty: "ok"};
 	},
 
 	componentDidMount: function() {
@@ -141,12 +141,15 @@ var Timer = React.createClass({
 		if (e.keyCode == 32) {
 			if (this.timing) {
 				this.props.model.stop();
-			} else if (document.activeElement.id != "chatInputBox") {
-				this.setState({down: true});
+				this.refs.penalties.setState({hidden: false});
+			} else if (document.activeElement.id != 'chatInputBox') {
+				this.setState({down: true, penalty: "ok"});
+				this.refs.penalties.setState({hidden: true});
 			}
 		} else if (this.timing) {
 			this.props.model.stop();
 			this.timing = false;
+			this.refs.penalties.setState({hidden: false});
 		}
 		this.render();
 	},
@@ -154,7 +157,7 @@ var Timer = React.createClass({
 	keyUp: function (e) {
 		if (e.keyCode == 32) {
 			if (!this.timing) {
-				if (document.activeElement.id != "chatInputBox") {
+				if (document.activeElement.id != 'chatInputBox') {
 					this.props.model.start();
 					this.timing = true;
 					this.setState({down: false});
@@ -166,8 +169,48 @@ var Timer = React.createClass({
 		this.render();
 	},
 
+	penaltyChange: function(event) {
+		this.setState({penalty: event.target.value});
+		this.render();
+	},
+
 	render: function() {
-		var style = {color: this.state.down?'green':'black'};
-		return (<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>);
+		var style = {color: this.state.down ? 'green' : (this.state.penalty != "ok" ? 'red' : 'black')};
+		return (
+			<div>
+				<p style={_.extend(style, this.style)}>{pretty(this.state.penalty != "dnf" ? this.props.model.time + (this.state.penalty == "plus2" ? 2000 : 0) : -1)}</p>
+				<Penalties ref="penalties" penaltyChange={this.penaltyChange}/>
+			</div>
+		);
+	}
+});
+
+var Penalties = React.createClass({
+
+	getInitialState: function() {
+
+		return {hidden: true};
+	},
+
+	render: function() {
+		var style = {visibility: this.state.hidden ? 'hidden' : 'visible'};
+		return (
+			<div style={style}>
+				<label>
+					<input type="radio" name="penalty" value="ok" onChange={this.props.penaltyChange} defaultChecked="defaultChecked"/>
+					OK
+				</label>
+
+				<label>
+					<input type="radio" name="penalty" value="plus2" onChange={this.props.penaltyChange}/>
+					+2
+				</label>
+
+				<label>
+					<input type="radio" name="penalty" value="dnf" onChange={this.props.penaltyChange}/>
+					DNF
+				</label>
+			</div>
+		);
 	}
 });
