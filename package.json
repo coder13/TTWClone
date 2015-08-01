@@ -4,12 +4,14 @@
   "description": "Clone of ttw",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "validate": "npm ls"
   },
   "author": "caleb",
   "license": "ISC",
   "dependencies": {
     "getconfig": "^2.1.0",
+    "git-validate": "^2.0.3",
     "hapi": "^8.6.1",
     "hapi-io": "0.0.7",
     "lodash": "^3.10.0",
@@ -20,10 +22,6 @@
     "colors": "^1.1.2",
     "git-validate": "^2.0.3"
   },
-  "scripts": {
-    "lint": "eslint .",
-    "validate": "npm ls"
-    },
   "pre-commit": [
     "lint",
     "validate",
