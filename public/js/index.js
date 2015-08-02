@@ -32,11 +32,10 @@ timer.addTime = function (time) {
 
 var socket = io.connect(window.location.hostname + ':' + window.location.port);
 
-
 if (socket) {
 	var joinRoom = function(room) {
 		socket.emit('joinRoom', room);
-	}
+	};
 
 	socket.on('handshakeStart', function (data) {
 		// TODO: replace with username and password when user system is implemented.

@@ -48,8 +48,19 @@ body {
 	text-align: center;
 	width: 100%;
 	height: 100%;
+}
+
+#timeContainer {
 	max-height: 35vh;
-	overflow: auto;
+	overflow:auto;
+}
+
+th {
+	width: 100px;
+}
+
+td {
+	width: 100px;
 }
 
 table {

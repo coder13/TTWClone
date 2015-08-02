@@ -60,15 +60,21 @@ var Times = React.createClass({
 
 		return (
 			<div>
-				<table>
+				<table id="timeListHeader">
 					<tr>
 						<th> </th>
 						{users.map(function (user) {
 							return (<th>{user.name || user.uuid || user}</th>);
 						})}
 					</tr>
-					{this.props.model.times.map(renderRow)}
 				</table>
+				<div id="timeContainer">
+					<table>
+						<tbody>
+							{this.props.model.times.map(renderRow)}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		);
 	}
