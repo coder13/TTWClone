@@ -21,43 +21,56 @@ server.connection({
 server.route(routes);
 
 /*
-	Chat
+	Socket
 */
 var io = require('socket.io')(server.listener);
 var clients = {};
 var clientCount = 0;
-var users = {}; // TODO back end storage for users
+var users = {};	//	TODO back end storage for users
+
+/* Rooms: */
 
 var rooms = {};
-var mainRoom = new Room(io);
+var mainRoom = new Room(io);	//	Single, main room for now.
 rooms[mainRoom.id] = mainRoom;
 
 io.on('connection', function (socket) {
 	try {
-		var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++};
+		var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++, roomID: mainRoom.id};
+		client.name = 'guest' + client.clientID;
 
-		socket.emit('handshake', {
-			state: 'START',
-			client: client,
-			rooms: _.map(rooms, function(room) {
-				return room.serialize();
-			})
-		});
+		/*	Handshake process: Starting by sending a request to the client to get locally stored data
+			such as a username and password or a uuid for now. If no local data is found, generate a uuid for the client.
+			Then send room data such as current times and list of users.
+		*/
+		socket.emit('handshakeStart'); // Gimmie yo data
 
-		socket.emit('message', {type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()});
-
-		socket.on('handshake', function (data) {
+		socket.on('handshakeUUID', function (data) {
 			if (data) {
 				client.uuid = data;
 			} else {
 				client.uuid = uuid.v4();
-				socket.emit('handshake', {state: 'ID', uuid: client.uuid});
 			}
+			socket.emit('handshakeEnd', client);
 
-			client.user = users[client.uuid];
+			// client.user = users[client.uuid]; // TODO
 			console.log(client.uuid, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
-			io.sockets.emit('userJoined', {client: client, timeStamp: Date.now()});
 		});
+
+		socket.on('joinRoom', function(data) {
+			client.roomID = data;
+			socket.join(data);
+			room = rooms[client.roomID];
+			room.addUser(client);
+
+			socket.emit('syncRoom', {users: room.users, times: room.times});
+		});
+
+		socket.on('leaveRoom', function(data) {
+			socket.leave(data);
+		});
+
+		socket.emit('message', {type: 'SYSTEM', name: 'System', message: 'Welcome!', timeStamp: Date.now()});
 
 		socket.on('message', function (data) {
 			if (data[0] === '/') {
@@ -76,16 +89,17 @@ io.on('connection', function (socket) {
 						break;
 				}
 			} else {
-				io.sockets.emit('message', {name: client.user.name, message: data, timeStamp: Date.now()});
+				io.sockets.emit('message', {name: client.name, message: data, timeStamp: Date.now()});
 			}
 		});
 
-		socket.on('joinRoom', function(data) {
-			socket.join(data);
-		});
-
-		socket.on('leaveRoom', function(data) {
-			socket.leave(data);
+		socket.on('newTime', function (data) {
+			var room = rooms[client.roomID];
+			if (room) {
+				room.addTime(data.uuid, data.time);
+			} else {
+				console.error('no room found');
+			}
 		});
 
 		socket.on('room', function(data) {
@@ -93,6 +107,8 @@ io.on('connection', function (socket) {
 		});
 
 		socket.on('disconnect', function (data) {
+			var room = rooms[client.roomID];
+			room.removeUser(client.uuid);
 			delete clients[socket.id];
 			console.log(socket.id.bold, 'disconnected');
 		});

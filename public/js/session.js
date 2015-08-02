@@ -1,56 +1,71 @@
 App.Models.Times = Backbone.Model.extend({
-	times: [
-		{'coder13': 10, 'alexM': 20},
-		{'coder13': 11},
-		{'coder13': 12, 'alexM': 21},
-		{'alexM': 23},
-		{'coder13': 14, 'alexM': 24},
-	],
-
+	times: [],
 	currentSolve: {},
-	users: ['coder13', 'alexM'],
+	users: [],
 
 	addUser: function (user) {
-		users.push(user);
-		this.render();
-	},
-
-	removeUser: function (user) {
-		delete users[user];
-		this.render();
-	},
-
-	addTime: function (data) {
-		times[times.length-1] = {user: data.user, time: data.time};
-		this.render();
-	},
-
-	syncTimes: function(data) {
-		if (data) {
-			times = data;
-			this.render();
+		console.log(user);
+		if (!_.findWhere(this.users, {uuid: user.uuid})) {
+			user.done = true;
+			this.users.push(user);
+			this.trigger('change', this);	
 		}
+	},
+
+	// Where user is a UUID
+	removeUser: function (userUUID) {
+		delete _.findWhere(this.users, {uuid: userUUID});
+		this.trigger('change', this);
+	},
+
+	// Where user is a uuid
+	addTime: function (userUUID, time) {
+		if (this.times.length > 0 && !_.findWhere(this.times[this.times.length - 1], {user: userUUID})) {
+			this.times[this.times.length - 1][userUUID] = time;
+			this.trigger('change', this);
+		}
+	},
+
+	newScramble: function (scramble) {
+		this.times.push({scramble: scramble});
+		this.trigger('change', this);
+	},
+
+	sync: function (users, times) {
+		this.times = times;
+		this.users = users;
+		this.trigger('change', this);
 	}
 });
 
 var Times = React.createClass({
+	componentDidMount: function() {
+		this.props.model.on('change', function () {
+			this.forceUpdate();
+		}.bind(this));
+	},
+
 	render: function() {
 		var users = this.props.model.users;
 		var renderRow = function (row, index) {
-			console.log(row, index);
-			return (<tr>{users.map(function (user) {
-				return (<td>{row[user]}</td>);
+			console.log(index);
+			return (<tr><td>{index}</td>{users.map(function (user) {
+				var time = row[user.uuid];
+				console.log(user.uuid, time);
+				if (!time) {
+					console.log(row);
+				}
+				return (<td>{time ? pretty(time) : ''}</td>);
 			})}</tr>);
 		};
-
-		console.log(this.props.model.users);
 
 		return (
 			<div>
 				<table>
 					<tr>
-						{this.props.model.users.map(function (user) {
-						return (<th>{user}</th>);
+						<th> </th>
+						{users.map(function (user) {
+						return (<th>{user.name || user.uuid || user}</th>);
 						})}
 					</tr>
 					{this.props.model.times.map(renderRow)}

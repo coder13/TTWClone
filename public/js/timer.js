@@ -92,6 +92,7 @@ App.Models.Timer = Backbone.Model.extend({
 	},
 	active: false,
 	time: 0,
+	enabled: false,
 
 	initialize: function (options) {
 		if (options.addTime) {
@@ -140,33 +141,37 @@ var Timer = React.createClass({
 	},
 	
 	keyDown: function(e) {
-		if (e.keyCode == 32) {
-			if (this.timing) {
+		if (this.props.model.enabled) {
+			if (e.keyCode == 32) {
+				if (this.timing) {
+					this.props.model.stop();
+				} else if (document.activeElement.id != 'chatInputBox') {
+					this.setState({down: true});
+				}
+			} else if (this.timing) {
 				this.props.model.stop();
-			} else if (document.activeElement.id != 'chatInputBox') {
-				this.setState({down: true});
+				this.timing = false;
+				this.refs.penalties.setState({hidden: false});
 			}
-		} else if (this.timing) {
-			this.props.model.stop();
-			this.timing = false;
-			this.refs.penalties.setState({hidden: false});
+			this.render();
 		}
-		this.render();
 	},
 
 	keyUp: function (e) {
-		if (e.keyCode == 32) {
-			if (!this.timing) {
-				if (document.activeElement.id != 'chatInputBox') {
-					this.props.model.start();
-					this.timing = true;
-					this.setState({down: false});
+		if (this.props.model.enabled) {
+			if (e.keyCode == 32) {
+				if (!this.timing) {
+					if (document.activeElement.id != 'chatInputBox') {
+						this.props.model.start();
+						this.timing = true;
+						this.setState({down: false});
+					}
+				} else {
+					this.timing = false;
 				}
-			} else {
-				this.timing = false;
 			}
+			this.render();
 		}
-		this.render();
 	},
 
 	render: function() {

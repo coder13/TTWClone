@@ -20,8 +20,9 @@ var ChatInput = React.createClass({
 	},
 	
 	send: function (e) {
-		if (this.state.text.trim() != '')
+		if (this.state.text.trim() != '') {
 			this.props.chat.sendMessage(this.state.text);
+		}
 		this.setState({text: ''});
 	},
 
