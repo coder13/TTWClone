@@ -144,8 +144,7 @@ var Timer = React.createClass({
 		if (this.props.model.enabled) {
 			if (this.timing) {
 				this.props.model.stop();
-				this.timing = false;
-			} else if (!this.timing) {
+			} else if (!this.timing && !this.state.down) {
 				this.props.model.stop();
 				this.timing = false;
 				if (document.activeElement.id != 'chatInputBox') {

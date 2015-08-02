@@ -57,7 +57,6 @@ if (socket) {
 
 	socket.on('userJoined', function (data) {
 		times.addUser(data);
-		console.log('blah');
 		var name = data.name || data.uuid;
 		chat.addMessage({name: 'System', message: name + " Joined!", timeStamp: data.timeStamp});
 	});
