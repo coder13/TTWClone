@@ -11,6 +11,8 @@
 // });
 // React.render(<Header/>, document.getElementById('header'));
 
+React.initializeTouchEvents(true);
+
 var timer = new App.Models.Timer({update: 'seconds', accuracy: 2, input: 'timer', inspection: 15, phase: 1});
 React.render(<Timer model={timer}/>, document.getElementById('timer'));
 
@@ -33,8 +35,8 @@ var socket = io.connect(window.location.hostname + ':' + window.location.port);
 
 if (socket) {
 	var joinRoom = function(room) {
-		socket.emit('joinRoom', data.room);
-	};
+		socket.emit('joinRoom', room);
+	}
 
 	socket.on('handshakeStart', function (data) {
 		// TODO: replace with username and password when user system is implemented.
@@ -46,7 +48,7 @@ if (socket) {
 		Me = data;
 		localStorage.setItem('uuid', Me.uuid);
 
-		socket.emit('joinRoom', Me.roomID); // then request to join room.
+		joinRoom(Me.roomID); // then request to join room.
 	});
 
 	socket.on('message', function (data) {
@@ -55,7 +57,6 @@ if (socket) {
 
 	socket.on('userJoined', function (data) {
 		times.addUser(data);
-		console.log('blah');
 		var name = data.name || data.uuid;
 		chat.addMessage({name: 'System', message: name + " Joined!", timeStamp: data.timeStamp});
 	});

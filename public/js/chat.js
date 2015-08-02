@@ -48,12 +48,6 @@ var ChatInput = React.createClass({
 App.Collections.Chat = Backbone.Collection.extend({
 	model: App.Models.ChatLine,
 
-	connect: function (name) {
-	},
-
-	leave: function () {
-	},
-
 	sendMessage: function (message) {
 		socket.emit('message', message);
 	},

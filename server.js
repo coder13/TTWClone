@@ -20,10 +20,12 @@ server.connection({
 // Routes
 server.route(routes);
 
-/*
-	Socket
-*/
+/* Socket */
+
 var io = require('socket.io')(server.listener);
+
+/*	Users */
+
 var clients = {};
 var clientCount = 0;
 var users = {};	//	TODO back end storage for users
@@ -36,8 +38,9 @@ rooms[mainRoom.id] = mainRoom;
 
 io.on('connection', function (socket) {
 	try {
-		var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++, roomID: mainRoom.id};
-		client.name = 'guest' + client.clientID;
+		// var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++, roomID: mainRoom.id};
+		// client.name = 'guest' + client.clientID;
+		var client = {socketID: socket.id};
 
 		/*	Handshake process: Starting by sending a request to the client to get locally stored data
 			such as a username and password or a uuid for now. If no local data is found, generate a uuid for the client.
@@ -46,24 +49,32 @@ io.on('connection', function (socket) {
 		socket.emit('handshakeStart'); // Gimmie yo data
 
 		socket.on('handshakeUUID', function (data) {
-			if (data) {
-				client.uuid = data;
-			} else {
-				client.uuid = uuid.v4();
-			}
-			socket.emit('handshakeEnd', client);
+			client.uuid = data || uuid.v4();
 
-			// client.user = users[client.uuid]; // TODO
+			if (users[client.uuid]) {
+				client = _.extend(users[client.uuid], client); // TODO	
+			} else {
+				console.log(client.uuid, 'doesn\'t already exist');
+				client.name = 'guest' + clientCount++;
+				client.roomID = mainRoom.id;
+				users[client.uuid] = client;
+			}
 			console.log(client.uuid, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
+			
+			socket.emit('handshakeEnd', client);
 		});
 
 		socket.on('joinRoom', function(data) {
-			client.roomID = data;
+			client.roomID = !data ? data : mainRoom.id;
 			socket.join(data);
 			room = rooms[client.roomID];
-			room.addUser(client);
+			if (room) {
+				room.addUser(client);
+				socket.emit('syncRoom', {users: room.users, times: room.times});
+			} else {
+				console.log(client, rooms);
+			}
 
-			socket.emit('syncRoom', {users: room.users, times: room.times});
 		});
 
 		socket.on('leaveRoom', function(data) {

@@ -140,43 +140,50 @@ var Timer = React.createClass({
 		}.bind(this));
 	},
 	
-	keyDown: function(e) {
+	down: function () {
 		if (this.props.model.enabled) {
-			if (e.keyCode == 32) {
-				if (this.timing) {
-					this.props.model.stop();
-				} else if (document.activeElement.id != 'chatInputBox') {
-					this.setState({down: true});
-				}
-			} else if (this.timing) {
+			if (this.timing) {
+				this.props.model.stop();
+			} else if (!this.timing && !this.state.down) {
 				this.props.model.stop();
 				this.timing = false;
-				this.refs.penalties.setState({hidden: false});
+				if (document.activeElement.id != 'chatInputBox') {
+					this.setState({down: true});
+				} 
 			}
 			this.render();
 		}
 	},
 
-	keyUp: function (e) {
+	up: function () {
 		if (this.props.model.enabled) {
-			if (e.keyCode == 32) {
-				if (!this.timing) {
-					if (document.activeElement.id != 'chatInputBox') {
-						this.props.model.start();
-						this.timing = true;
-						this.setState({down: false});
-					}
-				} else {
-					this.timing = false;
+			if (!this.timing) {
+				if (document.activeElement.id != 'chatInputBox') {
+					this.props.model.start();
+					this.timing = true;
+					this.setState({down: false});
 				}
+			} else {
+				this.timing = false;
 			}
 			this.render();
+		}
+	},
+
+	keyDown: function(e) {
+		if (e.keyCode == 32) {
+			this.down();	
+		}
+	},
+
+	keyUp: function (e) {
+		if (e.keyCode == 32) {
+			this.up();
 		}
 	},
 
 	render: function() {
 		var style = {color: this.state.down?'green':'black'};
-		return (<p style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>);
+		return (<p onTouchStart={this.down} onTouchMove={this.down} onTouchEnd={this.up} style={_.extend(style, this.style)}>{pretty(this.props.model.time)}</p>);
 	}
 });
-
