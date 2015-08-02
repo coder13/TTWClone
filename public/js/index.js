@@ -11,6 +11,8 @@
 // });
 // React.render(<Header/>, document.getElementById('header'));
 
+React.initializeTouchEvents(true);
+
 var timer = new App.Models.Timer({update: 'seconds', accuracy: 2, input: 'timer', inspection: 15, phase: 1});
 React.render(<Timer model={timer}/>, document.getElementById('timer'));
 
