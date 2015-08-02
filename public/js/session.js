@@ -14,7 +14,7 @@ App.Models.Times = Backbone.Model.extend({
 
 	// Where user is a UUID
 	removeUser: function (userUUID) {
-		delete _.findWhere(this.users, {uuid: userUUID});
+		delete _.remove(this.users, {uuid: userUUID});
 		this.trigger('change', this);
 	},
 
