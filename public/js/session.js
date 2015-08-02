@@ -8,7 +8,7 @@ App.Models.Times = Backbone.Model.extend({
 		if (!_.findWhere(this.users, {uuid: user.uuid})) {
 			user.done = true;
 			this.users.push(user);
-			this.trigger('change', this);	
+			this.trigger('change', this);
 		}
 	},
 
@@ -48,8 +48,8 @@ var Times = React.createClass({
 	render: function() {
 		var users = this.props.model.users;
 		var renderRow = function (row, index) {
-			console.log(index);
-			return (<tr><td>{index}</td>{users.map(function (user) {
+			console.log(index + 1);
+			return (<tr><td>{index + 1}</td>{users.map(function (user) {
 				var time = row[user.uuid];
 				console.log(user.uuid, time);
 				if (!time) {
@@ -69,7 +69,7 @@ var Times = React.createClass({
 						})}
 					</tr>
 					{this.props.model.times.map(renderRow)}
-					
+
 				</table>
 			</div>
 		);
