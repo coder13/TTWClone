@@ -33,7 +33,7 @@ var socket = io.connect(window.location.hostname + ':' + window.location.port);
 
 if (socket) {
 	var joinRoom = function(room) {
-		socket.emit('joinRoom', data.room);
+		socket.emit('joinRoom', room);
 	}
 
 	socket.on('handshakeStart', function (data) {
@@ -46,7 +46,7 @@ if (socket) {
 		Me = data;
 		localStorage.setItem('uuid', Me.uuid);
 
-		socket.emit('joinRoom', Me.roomID); // then request to join room.
+		joinRoom(Me.roomID); // then request to join room.
 	});
 
 	socket.on('message', function (data) {
