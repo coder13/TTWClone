@@ -20,8 +20,9 @@ var ChatInput = React.createClass({
 	},
 	
 	send: function (e) {
-		if (this.state.text.trim() != '')
+		if (this.state.text.trim() != '') {
 			this.props.chat.sendMessage(this.state.text);
+		}
 		this.setState({text: ''});
 	},
 
@@ -47,21 +48,15 @@ var ChatInput = React.createClass({
 App.Collections.Chat = Backbone.Collection.extend({
 	model: App.Models.ChatLine,
 
-	connect: function (name) {
-	},
-
-	leave: function () {
-	},
-
 	sendMessage: function (message) {
 		socket.emit('message', message);
 	},
 
 	addMessage: function (message) {
 		this.add(message);
-		if (this.length > 15) {
+		/*if (this.length > 15) {
 			this.shift();
-		}
+		}*/
 	}
 });
 
