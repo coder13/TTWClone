@@ -83,15 +83,24 @@ io.on('connection', function (socket) {
 
 		socket.on('message', function (data) {
 			if (data[0] === '/') {
+				console.log(data);
 				var split = data.slice(1).split(' ');
 				var command = split[0];
 				var args = split.slice(1);
+				console.log(command, args);
 				switch (command) {
 					case 'scramble':
 						if (args[0] && Scramblers[args[0]]) {
 							var scramble = Scramblers[args[0]].getRandomScramble(null, Math).scramble_string;
 							var message = args[0] + ' scramble: ' + scramble;
 							io.sockets.emit('message', {type: 'SYSTEM', name: 'System', message: message, timeStamp: Date.now()});
+						}
+						break;
+					case 'nick':
+						client.name = args[0];
+						var room = rooms[client.roomID];
+						if (room) {
+							room.update();
 						}
 						break;
 					default:
