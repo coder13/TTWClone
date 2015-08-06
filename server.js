@@ -38,8 +38,6 @@ rooms[mainRoom.id] = mainRoom;
 
 io.on('connection', function (socket) {
 	try {
-		// var client = clients[socket.id] = {socketID: socket.id, clientID: clientCount++, roomID: mainRoom.id};
-		// client.name = 'guest' + client.clientID;
 		var client = {socketID: socket.id};
 
 		/*	Handshake process: Starting by sending a request to the client to get locally stored data
@@ -50,17 +48,17 @@ io.on('connection', function (socket) {
 
 		socket.on('handshakeUUID', function (data) {
 			client.uuid = data || uuid.v4();
+			console.log(client.uuid, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
 
 			if (users[client.uuid]) {
-				client = _.extend(users[client.uuid], client); // TODO	
+				client = _.extend(users[client.uuid], client); // TODO	for user system
 			} else {
 				console.log(client.uuid, 'doesn\'t already exist');
 				client.name = 'guest' + clientCount++;
 				client.roomID = mainRoom.id;
 				users[client.uuid] = client;
 			}
-			console.log(client.uuid, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
-			
+
 			socket.emit('handshakeEnd', client);
 		});
 
@@ -108,13 +106,7 @@ io.on('connection', function (socket) {
 			var room = rooms[client.roomID];
 			if (room) {
 				room.addTime(data.uuid, data.time);
-			} else {
-				console.error('no room found');
 			}
-		});
-
-		socket.on('room', function(data) {
-			// rooms[client.user.session.roomId].onRoomMessage(client, data);
 		});
 
 		socket.on('disconnect', function (data) {

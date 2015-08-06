@@ -1,6 +1,5 @@
 App.Models.Times = Backbone.Model.extend({
 	times: [],
-	currentSolve: {},
 	users: [],
 
 	addUser: function (user) {
@@ -12,21 +11,25 @@ App.Models.Times = Backbone.Model.extend({
 	},
 
 	// Where user is a UUID
-	removeUser: function (userUUID) {
-		delete _.remove(this.users, {uuid: userUUID});
+	removeUser: function (user) {
+		delete _.remove(this.users, {uuid: user});
 		this.trigger('change', this);
 	},
 
 	// Where user is a uuid
-	addTime: function (userUUID, time) {
-		if (this.times.length > 0 && !_.findWhere(this.times[this.times.length - 1], {user: userUUID})) {
-			this.times[this.times.length - 1][userUUID] = time;
-			this.trigger('change', this);
+	addTime: function (user, time, index) {
+		if (!index) {
+			index = this.times.length - 1;
+			if (this.times.length > 0 && !_.findWhere(this.times[index].results, {user: user})) {
+				_.set(this.times[index], 'results[' + user + ']', time);
+			}
 		}
+		this.trigger('change', this);
 	},
 
 	newScramble: function (scramble) {
-		this.times.push({scramble: scramble});
+		this.times.push({scramble: scramble, results: {}});
+
 		this.trigger('change', this);
 	},
 
@@ -47,25 +50,26 @@ var Times = React.createClass({
 	render: function() {
 		var users = this.props.model.users;
 		var renderRow = function (row, index) {
-			return (<tr><td>{index + 1}</td>{users.map(function (user) {
-				var time = row[user.uuid];
+			return (<tr title={row.scramble}><td>{index + 1}</td>{users.map(function (user) {
+				var time = _.get(row, 'results[' + user.uuid + ']');
 				return (<td>{time ? pretty(time) : ''}</td>);
 			})}</tr>);
 		};
 
 		return (
-			<div>
-				<table>
+			<table>
+				<thead>
 					<tr>
 						<th> </th>
 						{users.map(function (user) {
 						return (<th>{user.name || user.uuid || user}</th>);
 						})}
 					</tr>
+				</thead>
+				<tbody>
 					{this.props.model.times.map(renderRow)}
-
-				</table>
-			</div>
+				</tbody>
+			</table>
 		);
 	}
 });
