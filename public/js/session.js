@@ -4,7 +4,6 @@ App.Models.Times = Backbone.Model.extend({
 	users: [],
 
 	addUser: function (user) {
-		console.log(user);
 		if (!_.findWhere(this.users, {uuid: user.uuid})) {
 			user.done = true;
 			this.users.push(user);
@@ -62,7 +61,7 @@ var Times = React.createClass({
 			<div>
 				<table id="timeListHeader">
 					<tr>
-						<th> </th>
+						<th></th>
 						{users.map(function (user) {
 							return (<th>{user.name || user.uuid || user}</th>);
 						})}
@@ -79,30 +78,3 @@ var Times = React.createClass({
 		);
 	}
 });
-
-// TODO hover over time and select penalty. This needs to be on Time.
-// var Penalties = React.createClass({
-// 	getInitialState: function() {
-// 		return {hidden: true};
-// 	},
-
-// 	render: function() {
-// 		var style = {visibility: this.state.hidden ? 'hidden' : 'visible'};
-// 		return (
-// 			<div style={style}>
-// 				<label>
-// 					<input type="radio" name="penalty" value="ok" onChange={this.props.penaltyChange} defaultChecked="defaultChecked"/>
-// 					OK
-// 				</label>
-// 				<label>
-// 					<input type="radio" name="penalty" value="plus2" onChange={this.props.penaltyChange}/>
-// 					+2
-// 				</label>
-// 				<label>
-// 					<input type="radio" name="penalty" value="dnf" onChange={this.props.penaltyChange}/>
-// 					DNF
-// 				</label>
-// 			</div>
-// 		);
-// 	}
-// });
