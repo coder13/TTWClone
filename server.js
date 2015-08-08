@@ -22,7 +22,7 @@ server.route(routes);
 
 /* Socket */
 
-var io = require('socket.io')(server.listener);
+global.io = require('socket.io')(server.listener);
 
 /*	Users */
 
@@ -33,7 +33,7 @@ var users = {};	//	TODO back end storage for users
 /* Rooms: */
 
 var rooms = {};
-var mainRoom = new Room(io);	//	Single, main room for now.
+var mainRoom = new Room();	//	Single, main room for now.
 rooms[mainRoom.id] = mainRoom;
 
 io.on('connection', function (socket) {
@@ -69,8 +69,6 @@ io.on('connection', function (socket) {
 			if (room) {
 				room.addUser(client);
 				socket.emit('syncRoom', {users: room.users, times: room.times});
-			} else {
-				console.log(client, rooms);
 			}
 
 		});
@@ -83,11 +81,9 @@ io.on('connection', function (socket) {
 
 		socket.on('message', function (data) {
 			if (data[0] === '/') {
-				console.log(data);
 				var split = data.slice(1).split(' ');
 				var command = split[0];
 				var args = split.slice(1);
-				console.log(command, args);
 				switch (command) {
 					case 'scramble':
 						if (args[0] && Scramblers[args[0]]) {
