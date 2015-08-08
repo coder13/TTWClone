@@ -51,7 +51,7 @@ var Times = React.createClass({
 		var users = this.props.model.users;
 		var renderRow = function (row, index) {
 			console.log(index + 1);
-			return (<tr><td>{index + 1}</td>{users.map(function (user) {
+			return (<tr><td><div title={row.scramble}>{index + 1}</div></td>{users.map(function (user) {
 				var time = row[user.uuid];
 				console.log(user.uuid, time);
 				if (!time) {
