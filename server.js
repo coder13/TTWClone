@@ -48,12 +48,12 @@ io.on('connection', function (socket) {
 
 		socket.on('handshakeUUID', function (data) {
 			client.uuid = data || uuid.v4();
-			console.log(client.uuid, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
+			console.log(client.uuid.bold, 'connected with id', socket.id.bold, 'with ip:', socket.request.connection.remoteAddress.bold);
 
 			if (users[client.uuid]) {
 				client = _.extend(users[client.uuid], client); // TODO	for user system
 			} else {
-				console.log(client.uuid, 'doesn\'t already exist');
+				console.log(client.uuid.bold, 'doesn\'t already exist');
 				client.name = 'guest' + clientCount++;
 				client.roomID = mainRoom.id;
 				users[client.uuid] = client;

@@ -18,19 +18,22 @@ App.Models.Times = Backbone.Model.extend({
 	},
 
 	// Where user is a uuid
-	addTime: function (userUUID, time) {
-		if (this.times.length > 0 && !_.findWhere(this.times[this.times.length - 1], {user: userUUID})) {
-			this.times[this.times.length - 1][userUUID] = time;
+	addTime: function (userUUID, time, index) {
+		var i = index || (this.times.length - 1);
+		if (this.times.length > 0 && !_.findWhere(_.get(this.times[i], 'results'), {user: userUUID})) {
+			_.set(this.times[i], 'results[' + userUUID + ']', time);
 			this.trigger('change', this);
 		}
 	},
 
 	newScramble: function (scramble) {
-		this.times.push({scramble: scramble});
+		console.log('New scramble:', scramble)
+		this.times.push({scramble: scramble, results: {}});
 		this.trigger('change', this);
 	},
 
 	sync: function (users, times) {
+		console.log('Syncing...');
 		this.times = times;
 		this.users = users;
 		this.trigger('change', this);
@@ -50,10 +53,9 @@ var Times = React.createClass({
 		});
 		var users = this.props.model.users;
 		var renderRow = function (row, index) {
-			console.log(index + 1);
 			return (<tr><td><div title={row.scramble}>{index + 1}</div></td>{users.map(function (user) {
-				var time = row[user.uuid];
-				console.log(user.uuid, time);
+				var time = _.get(row, 'results[' + user.uuid + ']');
+				// console.log(index + 1, user.uuid, row);
 				if (!time) {
 					console.log(row);
 				}

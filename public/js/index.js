@@ -67,6 +67,8 @@ if (socket) {
 	});
 
 	socket.on('syncRoom', function (data) {
+		console.log('sync');
+		console.log(data);
 		times.sync(data.users, data.times);
 	});
 
