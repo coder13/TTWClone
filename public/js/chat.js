@@ -54,9 +54,8 @@ App.Collections.Chat = Backbone.Collection.extend({
 
 	addMessage: function (message) {
 		this.add(message);
-		/*if (this.length > 15) {
-			this.shift();
-		}*/
+		var messages = $("#messages")[0];
+		messages.scrollTop = messages.scrollHeight;
 	}
 });
 
